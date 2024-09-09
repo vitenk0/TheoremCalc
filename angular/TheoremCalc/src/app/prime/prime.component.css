@@ -1,0 +1,63 @@
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.prime-container {
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    max-width: 300px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+input {
+    padding: 5px;
+    margin: 5px;
+}
+
+button {
+    padding: 10px;
+    background-color: #000000;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+button:disabled {
+    background-color: #737373;
+}
+
+p {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.result {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #000000;
+    font-weight: bold;
+    max-width: 100%;
+    
+}
+
+.result-list {
+    word-wrap: break-word;
+    white-space: pre-wrap; 
+}
+
+.error {
+    text-align: center;
+    font-size: 1.5rem;
+    color: red;
+    font-weight: bold;
+}

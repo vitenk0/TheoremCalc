@@ -1,0 +1,38 @@
+<h1>Prime Numbers from:</h1>
+<div class="prime-container">
+    <form (ngSubmit)="onSubmit()" #form="ngForm">
+      <div>
+        <input
+          type="number"
+          placeholder="Start"
+          id="start"
+          name="start"
+          [(ngModel)]="start"
+          required
+        />
+      </div>
+  
+      <div>
+        <input
+          type="number"
+          placeholder="End"
+          id="end"
+          name="end"
+          [(ngModel)]="end"
+          required
+        />
+      </div>
+  
+      <button type="submit">Submit</button>
+    </form>
+</div>
+
+<div class="result" *ngIf="result">
+    <p>Result:</p>
+    <p class="result-list">{{ result }}</p> <!-- Display the comma-separated result -->
+</div>
+
+<div class="error" *ngIf="error !== null">
+    <p>Error: </p>
+    <p>{{ error }}</p>
+</div>

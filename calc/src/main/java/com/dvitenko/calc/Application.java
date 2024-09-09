@@ -20,7 +20,7 @@ public class Application {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**") // Adjust the path to your API endpoints
-                    .allowedOrigins("http://localhost:3000") // Allow React app origin
+                    .allowedOrigins("http://localhost:4200") 
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(true);
