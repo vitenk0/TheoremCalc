@@ -2,14 +2,13 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-home',
   standalone: true,
   imports: [],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.css'
 })
-
-export class HeaderComponent {
+export class HomeComponent {
   constructor(private router: Router) {}
 
   redirect(route: string) {

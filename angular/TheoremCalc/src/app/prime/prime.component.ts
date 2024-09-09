@@ -33,8 +33,15 @@ export class PrimeComponent {
         this.error = 'Start number must be less than the end number';
       } else {
         this.getNumbersInRange(this.start, this.end).subscribe({
-          next: (response) => this.result = response.join(', '),
-          error: (error) => console.error('There was an error!', error)
+          next: (response) => {
+            if (response.length === 0) {
+              this.result = null;
+              this.error = 'No prime numbers found in the given range';
+            } else {
+              this.result = response.join(', ');
+            }
+          },
+          error: (error) => console.error('Error', error)
         });
       }
     }

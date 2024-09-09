@@ -32,10 +32,6 @@ button {
     margin-right: auto;
 }
 
-button:disabled {
-    background-color: #737373;
-}
-
 p {
     margin-top: 10px;
     font-weight: bold;
@@ -47,7 +43,6 @@ p {
     color: #000000;
     font-weight: bold;
     max-width: 100%;
-    
 }
 
 .result-list {
@@ -60,4 +55,5 @@ p {
     font-size: 1.5rem;
     color: red;
     font-weight: bold;
+    font-family: 'Times New Roman', Times, serif;
 }
