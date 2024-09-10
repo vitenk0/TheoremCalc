@@ -19,7 +19,7 @@ export class PrimeComponent {
   result: string | null = null;
   error: string | null = null;
 
-  private apiUrl = '216.24.60.0/24/api/prime'; 
+  private apiUrl = 'https://theoremcalc.onrender.com/api/prime'; 
 
   constructor(private http: HttpClient) {}
 
