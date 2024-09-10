@@ -3,6 +3,6 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 FROM openjdk:11-jre-slim
-COPY --from=build /target/calc-0.0.1-SNAPSHOT.jar /app.jar
+COPY --from=build /target/calc-0.0.1-SNAPSHOT.jar calc.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+CMD ["java", "-jar", "calc.jar"]
