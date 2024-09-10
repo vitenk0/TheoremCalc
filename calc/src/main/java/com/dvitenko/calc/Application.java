@@ -20,7 +20,7 @@ public class Application {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**") // Adjust the path to your API endpoints
-                    .allowedOrigins("https://main--theoremcalc.netlify.app") 
+                    .allowedOrigins("https://main--theoremcalc.netlify.app", "https://theoremcalc.xyz") 
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(true);
