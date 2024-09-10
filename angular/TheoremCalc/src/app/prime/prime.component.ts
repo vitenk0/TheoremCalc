@@ -19,7 +19,7 @@ export class PrimeComponent {
   result: string | null = null;
   error: string | null = null;
 
-  private apiUrl = 'http://localhost:8080/api/prime'; 
+  private apiUrl = '216.24.60.0/24/api/prime'; 
 
   constructor(private http: HttpClient) {}
 
