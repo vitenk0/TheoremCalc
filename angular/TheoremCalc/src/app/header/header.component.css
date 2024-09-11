@@ -2,10 +2,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #080808;
-    color: white;
+    background: rgb(0, 0, 0);
+    background: linear-gradient(90deg, #080808 25%,#563a7c 75%,rgba(0,212,255,1) 100%);
     padding: 1rem;
-    margin: -8px;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     margin-bottom: 20px;
@@ -17,7 +16,7 @@ header h1 {
 }
   
 .logo img {
-    height: 150px;
+    height: 110px;
 }
 
 .nav-buttons {
@@ -27,16 +26,16 @@ header h1 {
 }
 
 .nav-btn {
-    background-color: #080808;
+    background-color: transparent;
     border: none;
     padding: 10px 15px;
     color: rgb(255, 255, 255);
     font-family: OCR A Std, monospace;
     cursor: pointer;
     border-radius: 4px;
-    font-size: 2rem;
+    font-size: 1.8rem;
 }
 
 .nav-btn:hover {
-    background-color: #686868;
+    background-color: #000000;
 }

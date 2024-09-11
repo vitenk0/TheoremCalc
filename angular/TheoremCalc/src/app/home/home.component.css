@@ -1,26 +1,30 @@
 .home-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    column-gap: 50px;
+    row-gap: 50px;
+    padding: 50px;
+}
   
-  .redirect-box {
-    width: 200px;
-    height: 150px;
-    background-color: #4CAF50;
-    color: white;
+.redirect-box {
+    background-color: #afb9f0;
+    color: rgb(0, 0, 0);
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 18px;
-    text-align: center;
     border-radius: 8px;
     cursor: pointer;
+    padding: 20px;
     transition: transform 0.2s, background-color 0.2s;
-  }
-  
-  .redirect-box:hover {
-    background-color: #45a049;
+    text-align: center;
+}
+
+.redirect-box:hover {
+    background-color: #e1e4b1;
     transform: scale(1.05);
-  }
+}
+
+p {
+  font-family: OCR A Std, monospace;
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
@@ -14,4 +14,4 @@ import { AboutComponent } from './about/about.component';
   styleUrl: './app.component.css'
 })
 
-export class AppComponent {}
+export class AppComponent{}
