@@ -7,8 +7,8 @@
 }
   
 .redirect-box {
-    background-color: #afb9f0;
-    color: rgb(0, 0, 0);
+    background-color: rgba(8, 8, 8, .5);
+    color: rgb(255, 255, 255);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,10 +21,10 @@
 }
 
 .redirect-box:hover {
-    background-color: #e1e4b1;
+    background-color: rgba(8, 8, 8, .7);
     transform: scale(1.05);
 }
 
 p {
-  font-family: OCR A Std, monospace;
+    font-family: OCR A Std, monospace;
 }

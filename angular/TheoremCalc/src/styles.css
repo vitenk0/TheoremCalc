@@ -10,4 +10,11 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    background-attachment: fixed;
+}
+
+.scrollable-div {
+    height: 80vh; 
+    overflow-y: auto; 
+    padding: 20px;
 }
