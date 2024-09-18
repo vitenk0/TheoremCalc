@@ -22,7 +22,6 @@ public class Prime {
             isPrime[3] = true;
         }
 
-        // Apply the Sieve of Atkin's conditions
         for (int x = 1; x * x <= end; x++) {
             for (int y = 1; y * y <= end; y++) {
                 // First condition: n = 4*x^2 + y^2
