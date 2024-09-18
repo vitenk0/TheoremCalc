@@ -11,7 +11,7 @@ class MathParser {
     public static List<String> tokenize(String expression) {
         // Recognize numbers, variables, and operators
         List<String> tokens = new ArrayList<>();
-        Matcher matcher = Pattern.compile("\\d+\\.\\d+|\\d+|[a-zA-Z]+|[-+*/()]").matcher(expression);
+        Matcher matcher = Pattern.compile("\\d+\\.\\d+|\\d+|[a-zA-Z]+|[-+*/()^]").matcher(expression);
         while (matcher.find()) {
             tokens.add(matcher.group());
         }
@@ -57,6 +57,17 @@ class MathParser {
             while (getCurrentToken() != null && (getCurrentToken().equals("*") || getCurrentToken().equals("/"))) {
                 String op = getCurrentToken();
                 consumeToken();
+                Node rightNode = parseExponentiation();
+                node = new Node(op, Type.OPERATOR, node, rightNode);
+            }
+            return node;
+        }
+
+        private Node parseExponentiation() {
+            Node node = parseFactor();
+            while (getCurrentToken() != null && getCurrentToken().equals("^")) {
+                String op = getCurrentToken();
+                consumeToken();
                 Node rightNode = parseFactor();
                 node = new Node(op, Type.OPERATOR, node, rightNode);
             }
@@ -81,7 +92,7 @@ class MathParser {
                 return new Node(token, Type.NUMBER);
             } else if (token.matches("[a-zA-Z]+")) {  // Variables
                 consumeToken();
-                return new AST.Node(token, Type.VARIABLE);
+                return new Node(token, Type.VARIABLE);
             }
             return null;
         }
@@ -94,7 +105,7 @@ class MathParser {
     }
 
     public static void main(String[] args) {
-        String expression = "3 + 5 * (x - 8) / y";
+        String expression = "(3 + 5) * (x - 8) / y^(2*x)";
         Node result = evaluate(expression);
         System.out.println(result.toString());
     }
