@@ -18,4 +18,9 @@ public class Controller {
 		return prime.sieveOfAtkin();
 	}
 
+	@PostMapping("/parse")
+	public String SieveOfAtkin(@RequestBody MathParser parser) {
+		return parser.evaluate().toString();
+	}
+
 }

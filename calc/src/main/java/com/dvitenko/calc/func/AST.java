@@ -7,7 +7,7 @@ public class AST {
         OPERATOR
     }
 
-    static class Node {
+    public static class Node {
         String value;
         Node left;
         Node right;
