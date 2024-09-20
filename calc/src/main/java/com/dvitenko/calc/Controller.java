@@ -1,8 +1,6 @@
 package com.dvitenko.calc;
 
-
 import java.util.List;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +17,8 @@ public class Controller {
 	}
 
 	@PostMapping("/parse")
-	public String SieveOfAtkin(@RequestBody MathParser parser) {
+	public String SieveOfAtkin(@RequestBody String expression) {
+		MathParser parser = new MathParser(expression);
 		return parser.evaluate().toString();
 	}
 
