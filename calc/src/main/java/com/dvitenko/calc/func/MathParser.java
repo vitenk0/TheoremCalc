@@ -4,11 +4,14 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.dvitenko.calc.func.AST.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MathParser {
     private String expression;
 
-    public MathParser(String expression) {
+    @JsonCreator
+    public MathParser(@JsonProperty("exp") String expression) {
         this.expression = expression;
     }
 
