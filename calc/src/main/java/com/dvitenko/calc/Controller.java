@@ -17,8 +17,7 @@ public class Controller {
 	}
 
 	@PostMapping("/parse")
-	public String SieveOfAtkin(@RequestBody String expression) {
-		MathParser parser = new MathParser(expression);
+	public String SieveOfAtkin(@RequestBody MathParser parser) {
 		return parser.evaluate().toString();
 	}
 
