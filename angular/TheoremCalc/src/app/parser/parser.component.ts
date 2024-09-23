@@ -22,6 +22,10 @@ export class ParserComponent {
 
   constructor(private http: HttpClient) {}
 
+  populateInput(expression: string) {
+    this.exp = expression;
+  }
+
   onSubmit() {
     this.error = null;
     this.result = null;

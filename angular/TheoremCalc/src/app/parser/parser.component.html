@@ -1,41 +1,52 @@
 <div class="main-container">
-    <div class="parse-container">
-      <h1>Expression Parser</h1>
-      <div class="input-container">
-          <form (ngSubmit)="onSubmit()" #form="ngForm">
-            <div>
-              <input
-                type="text"
-                placeholder="Expression"
-                id="exp"
-                name="exp"
-                [(ngModel)]="exp"
-                required
-              />
-            </div>
-            <button type="submit">Submit</button>
-          </form>
+  <div class="how-to-use">
+    <h2>How To Use</h2>
+    <p> 
+      Enter a mathematical expression and click submit to convert it into a binary tree.
+    </p>
+    <p>
+      The parser currently supports the following operations: +, -, *, /, ^, and parentheses.
+    </p>
+    <p>
+      Ex. <a class="example" (click)="populateInput('(2x+3.7)^(4/5-g)')">(2x+3.7)^(4/5-g)</a>
+    </p>
+  </div>
+  <div class="parse-container">
+    <h1>Expression Parser</h1>
+    <div class="input-container">
+        <form (ngSubmit)="onSubmit()" #form="ngForm">
+          <div>
+            <input
+              type="text"
+              placeholder="Expression"
+              id="exp"
+              name="exp"
+              [(ngModel)]="exp"
+              required
+            />
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+    </div>
+  </div>
+  <div class="about">
+    <h2>About</h2>
+    <p> 
+      This mathematical expression parser uses a recursive descent algorithm to convert expressions into binary trees.
+    </p>
+    <p>
+      <a href="https://github.com/vitenk0/TheoremCalc/blob/main/calc/src/main/java/com/dvitenko/calc/func/MathParser.java" target="_blank">Implementation</a>
+    </p>
+  </div>
+</div>
+<div class="result" *ngIf="result">
+    <p>Result:</p>
+    <div class="tree-container">
+      <pre class="tree">{{ result }}</pre>
       </div>
-    </div>
-    <div class="about">
-      <h2>About</h2>
-      <p> 
-        This mathematical expression parser uses a recursive descent algorithm to convert expressions into binary trees.
-      </p>
-      <p>
-        <a href="https://github.com/vitenk0/TheoremCalc/blob/main/calc/src/main/java/com/dvitenko/calc/func/MathParser.java" target="_blank">Implementation</a>
-      </p>
-    </div>
-  </div>
-  
-  <div class="result" *ngIf="result">
-      <p>Result:</p>
-      <div class="tree-container">
-        <pre class="tree">{{ result }}</pre>
-        </div>
-  </div>
-  
-  <div class="error" *ngIf="error !== null">
-      <p>Error: </p>
-      <p>{{ error }}</p>
-  </div>
+</div>
+
+<div class="error" *ngIf="error !== null">
+    <p>Error: </p>
+    <p>{{ error }}</p>
+</div>
