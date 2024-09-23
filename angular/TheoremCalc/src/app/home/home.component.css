@@ -25,6 +25,10 @@
     transform: scale(1.05);
 }
 
+h1 {
+    max-width: 50%;
+}
+
 p {
     font-family: OCR A Std, monospace;
 }

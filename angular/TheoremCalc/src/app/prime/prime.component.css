@@ -59,6 +59,14 @@ button {
     margin-right: auto;
 }
 
+a {
+    color:rgba(112,163,209,255);
+}
+
+a:hover {
+    color:rgb(67, 106, 145);
+}
+
 p {
     margin-top: 10px;
     font-weight: bold;
