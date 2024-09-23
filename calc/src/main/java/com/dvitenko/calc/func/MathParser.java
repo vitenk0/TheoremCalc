@@ -58,7 +58,7 @@ public class MathParser {
             currentTokenIndex++;
         }
 
-        // Parse expressions with addition and subtraction
+        // Parse addition and subtraction
         private Node parseExpression() {
             Node node = parseTerm();
             while (getCurrentToken() != null && (getCurrentToken().equals("+") || getCurrentToken().equals("-"))) {
@@ -70,9 +70,9 @@ public class MathParser {
             return node;
         }
 
-        // Parse terms with multiplication and division
+        // Parse multiplication and division
         private Node parseTerm() {
-            Node node = parseFactor();
+            Node node = parseExponentiation();
             while (getCurrentToken() != null && (getCurrentToken().equals("*") || getCurrentToken().equals("/"))) {
                 String op = getCurrentToken();
                 consumeToken();
@@ -82,12 +82,13 @@ public class MathParser {
             return node;
         }
 
+        // Parse exponents
         private Node parseExponentiation() {
             Node node = parseFactor();
             while (getCurrentToken() != null && getCurrentToken().equals("^")) {
                 String op = getCurrentToken();
                 consumeToken();
-                Node rightNode = parseFactor();
+                Node rightNode = parseExponentiation();
                 node = new Node(op, Type.OPERATOR, node, rightNode);
             }
             return node;
@@ -96,8 +97,8 @@ public class MathParser {
         // Parse factors (numbers, variables, and expressions inside parentheses)
         private Node parseFactor() {
             String token = getCurrentToken();
-            if (token == null) return null;
-
+            if (token == null) 
+                return null;
             if (token.equals("(")) {
                 consumeToken(); // consume '('
                 Node node = parseExpression();
@@ -122,11 +123,4 @@ public class MathParser {
         Parser parser = new Parser(tokens);
         return parser.parseExpression();
     }
-
-    /*
-    public static void main(String[] args) {
-        String expression = "(3 + 5x)*(x - 8) / y^(2x)";
-        Node result = evaluate(expression);
-        System.out.println(result.toString());
-    }*/
 }
