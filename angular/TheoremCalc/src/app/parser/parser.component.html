@@ -39,11 +39,15 @@
     </p>
   </div>
 </div>
-<div class="result" *ngIf="result">
-    <p>Result:</p>
-    <div class="tree-container">
-      <pre class="tree">{{ result }}</pre>
-      </div>
+<div class="result-container">
+  <div class="result" *ngIf="tree">
+      <h2>Tree:</h2>
+      <pre class="tree">{{ tree }}</pre>
+  </div>
+  <div class="latex" *ngIf="latex_exp">
+    <h2>Expression:</h2>
+    <div class="latex_exp" [innerHTML]="latex_exp"></div>
+  </div>
 </div>
 
 <div class="error" *ngIf="error !== null">

@@ -17,8 +17,13 @@ public class Controller {
 	}
 
 	@PostMapping("/parse")
-	public String SieveOfAtkin(@RequestBody MathParser parser) {
+	public String Parser(@RequestBody MathParser parser) {
 		return parser.evaluate().toString();
+	}
+
+	@PostMapping("/latex")
+	public String toLaTex(@RequestBody MathParser parser) {
+		return parser.evaluate().getCompleteLatex();
 	}
 
 }

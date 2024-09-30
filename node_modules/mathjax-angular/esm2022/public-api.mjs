@@ -1,0 +1,6 @@
+/*
+ * Public API Surface of mathjax-lib
+ */
+export * as MathJaxUtils from './utils';
+export * from './directive';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3Byb2plY3RzL21hdGhqYXgtbGliL3NyYy9wdWJsaWMtYXBpLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztHQUVHO0FBQ0gsT0FBTyxLQUFLLFlBQVksTUFBTSxTQUFTLENBQUM7QUFDeEMsY0FBYyxhQUFhLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKlxuICogUHVibGljIEFQSSBTdXJmYWNlIG9mIG1hdGhqYXgtbGliXG4gKi9cbmV4cG9ydCAqIGFzIE1hdGhKYXhVdGlscyBmcm9tICcuL3V0aWxzJztcbmV4cG9ydCAqIGZyb20gJy4vZGlyZWN0aXZlJztcbiJdfQ==

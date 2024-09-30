@@ -7,7 +7,9 @@ h1 {
 
 h2 {
     text-align: center;
+    color: white;
     font-family: 'Times New Roman', Times, serif;
+    font-size: 25px;
 }
 
 .main-container {
@@ -85,14 +87,18 @@ a:hover {
     cursor: pointer;
 }
 
-.result {
+.result-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 5%;
+}
+
+.result, .latex {
     display: flex;  
     flex-direction: column;
     align-items: center; 
     text-align: center;
-    font-size: 1.5rem;
-    color: #ffffff;
-    font-weight: bold;
     max-width: 100%;
 }
 
@@ -104,6 +110,20 @@ a:hover {
     padding: 35px;
     border-radius: 8px;
     background-color: rgba(8, 8, 8, .5);
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin: 0px;
+}
+
+.latex_exp {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    padding: 35px;
+    border-radius: 8px;
+    background-color: rgba(8, 8, 8, .5);
+    color:#ffffff;
+    font-size: 2rem;
 }
 
 .error {

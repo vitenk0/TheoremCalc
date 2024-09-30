@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http'; 
 import { Observable } from 'rxjs';
+import { AfterViewInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-parser',
@@ -13,14 +16,13 @@ import { Observable } from 'rxjs';
   styleUrl: './parser.component.css'
 })
 
-export class ParserComponent {
+export class ParserComponent implements AfterViewInit {
   exp: string | null = null;
-  result: string | null = null;
+  tree: string | null = null;
   error: string | null = null;
+  latex_exp: string | null = null;
 
-  private apiUrl = 'https://theoremcalc.onrender.com/api/parse'; 
-
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: any) {}
 
   populateInput(expression: string) {
     this.exp = expression;
@@ -28,32 +30,75 @@ export class ParserComponent {
 
   onSubmit() {
     this.error = null;
-    this.result = null;
+    this.tree = null;
     if (this.exp !== null) {
-      console.log('Request body:', { exp: this.exp });
       this.getTree(this.exp).subscribe({
           next: (response) => {
-            console.log('Response from server:', response);
-            if (!response || response.length === 0) { 
-              this.result = null;
-              this.error = 'No prime numbers found in the given range';
-            } else {
-              this.result = response; 
-            }
+            this.tree = response;
           },
-          error: (error) => {
-            console.error('Error', error);
-            console.error('Error status:', error.status);
-            console.error('Error body:', error.error);
+          error: () => {
             this.error = 'An error occurred while processing your request';
           }
+      });
+      this.getLaTex(this.exp).subscribe({
+        next: (response) => {
+          this.latex_exp = response; 
+          this.renderMathJax();
+        },
+        error: () => {
+          this.error = 'An error occurred while processing your request';
+        }
       });
     }
   }
   
   getTree(exp: string): Observable<string> {
     const body = { exp };
-    return this.http.post(this.apiUrl, body, { responseType: 'text' });
+    return this.http.post(/*'https://theoremcalc.onrender.com/api/parse'*/ 'http://localhost:8080/api/parse', body, { responseType: 'text' });
+  }
+
+  getLaTex(exp: string): Observable<string> {
+    const body = { exp };
+    return this.http.post(/*'https://theoremcalc.onrender.com/api/latex'*/ 'http://localhost:8080/api/latex', body, { responseType: 'text' });
+  }
+
+  ngAfterViewInit(): void {
+    this.loadMathJax();
+    this.renderMathJax();
+  }
+
+  ngAfterViewChecked(): void {
+    this.renderMathJax();
+  } 
+
+  loadMathJax() {
+    if (isPlatformBrowser(this.platformId)) {
+        if (!window.MathJax) {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+            script.async = true;
+            script.onload = () => {
+                this.renderMathJax();
+            };
+            document.head.appendChild(script);
+        } else {
+            this.renderMathJax();
+        }
+    }
+}
+
+  renderMathJax() {
+    if (isPlatformBrowser(this.platformId) && this.exp) {
+      window.MathJax.typesetPromise();
+    }
+  }
+}
+
+
+declare global {
+  interface Window {
+    MathJax: any;
   }
 }
 

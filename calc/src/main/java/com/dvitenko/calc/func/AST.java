@@ -42,5 +42,62 @@ public class AST {
                 this.right.print(buffer, childrenPrefix + "└── ", childrenPrefix + "    ");
             }
         }
+
+        private int getPrecedence(String op) {
+            switch (op) {
+                case "+":
+                case "-":
+                    return 1;
+                case "*":
+                case "/":
+                    return 2;
+                case "^":
+                    return 3;
+                default:
+                    return 0;
+            }
+        }
+
+        public String toLatex() {
+            if (this.type == Type.NUMBER || this.type == Type.VARIABLE) {
+                return value;
+            }
+
+            if (this.type == Type.OPERATOR) {
+                String leftLatex = left != null ? left.toLatex() : "";
+                String rightLatex = right != null ? right.toLatex() : "";
+
+                boolean needLeftParen = left != null && 
+                    (left.type == Type.OPERATOR && getPrecedence(left.value) < getPrecedence(value));
+                boolean needRightParen = right != null && 
+                    (right.type == Type.OPERATOR && getPrecedence(right.value) <= getPrecedence(value));
+
+                if (needLeftParen) {
+                    leftLatex = "\\left(" + leftLatex + "\\right)";
+                }
+                if (needRightParen) {
+                    rightLatex = "\\left(" + rightLatex + "\\right)";
+                }
+
+                switch (value) {
+                    case "+":
+                    case "-":
+                        return leftLatex + " " + value + " " + rightLatex;
+                    case "*":
+                        return leftLatex + rightLatex; // LaTeX dot for multiplication
+                    case "/":
+                        return "\\frac{" + leftLatex + "}{" + rightLatex + "}"; // LaTeX fraction
+                    case "^":
+                        return leftLatex + "^{" + rightLatex + "}"; // Exponentiation in LaTeX
+                    default:
+                        return value; // Return operator as-is if not handled
+                }
+            }
+            return "";
+        }
+
+        public String getCompleteLatex() {
+            return "\\(" + this.toLatex() + "\\)";
+        }
     }
 }
