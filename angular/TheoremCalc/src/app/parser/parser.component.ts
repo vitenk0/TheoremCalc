@@ -54,12 +54,12 @@ export class ParserComponent implements AfterViewInit {
   
   getTree(exp: string): Observable<string> {
     const body = { exp };
-    return this.http.post(/*'https://theoremcalc.onrender.com/api/parse'*/ 'http://localhost:8080/api/parse', body, { responseType: 'text' });
+    return this.http.post('https://theoremcalc.onrender.com/api/parse', body, { responseType: 'text' });
   }
 
   getLaTex(exp: string): Observable<string> {
     const body = { exp };
-    return this.http.post(/*'https://theoremcalc.onrender.com/api/latex'*/ 'http://localhost:8080/api/latex', body, { responseType: 'text' });
+    return this.http.post('https://theoremcalc.onrender.com/api/latex', body, { responseType: 'text' });
   }
 
   ngAfterViewInit(): void {
