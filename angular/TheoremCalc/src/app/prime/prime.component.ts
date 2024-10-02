@@ -4,11 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http'; 
 import { catchError, Observable, throwError } from 'rxjs';
-
-export interface apiResponse<T> {
-  data: T | null;
-  error: string | null;
-}
+import { apiResponse } from '../api-response.model';
 
 @Component({
   selector: 'app-prime',
@@ -40,10 +36,8 @@ export class PrimeComponent {
     } else {
       this.getNumbersInRange(this.start, this.end).subscribe({
         next: (response) => {
-          if (response.data && response.data.length > 0) {
-              this.result = response.data.join(', ');
-          } else {
-              this.error = 'No prime numbers found in the range';
+          if(response.data){
+            this.result = response.data.join(', ');
           }
         },
         error: (errorResponse) => {
@@ -58,7 +52,6 @@ export class PrimeComponent {
     return this.http.post<apiResponse<number[]>>(this.apiUrl + "/api/prime", body)
     .pipe(
       catchError((error) => {
-        // Log the error and rethrow it
         console.error('HTTP Error:', error);
         const errorMessage = error.error?.error || "An unexpected error occurred";
         return throwError(() => new Error(errorMessage));

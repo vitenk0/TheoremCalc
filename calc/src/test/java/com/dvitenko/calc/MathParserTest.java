@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 public class MathParserTest {
-    // Test getCompleteLatex() method
+
     @Test
     public void testGetCompleteLatex() {
         List<String> tokens = List.of("2", "+", "3", "*", "x");
