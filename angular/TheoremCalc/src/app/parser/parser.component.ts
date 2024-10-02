@@ -22,6 +22,11 @@ export class ParserComponent implements AfterViewInit {
   error: string | null = null;
   latex_exp: string | null = null;
 
+  //Testing
+  //private apiUrl = 'http://localhost:8080';
+  //Prod
+  private apiUrl = 'https://theoremcalc.onrender.com';
+
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: any) {}
 
   populateInput(expression: string) {
@@ -31,35 +36,39 @@ export class ParserComponent implements AfterViewInit {
   onSubmit() {
     this.error = null;
     this.tree = null;
-    if (this.exp !== null) {
+    this.latex_exp = null;
+
+    if(this.exp === null) {
+      this.error = 'Enter an expression';
+    } else {
       this.getTree(this.exp).subscribe({
           next: (response) => {
             this.tree = response;
+            this.getLaTex(this.exp!).subscribe({
+              next: (latexResponse) => {
+                this.latex_exp = latexResponse; 
+                this.renderMathJax();
+              },
+              error: (errorResponse) => {
+                this.error = typeof errorResponse.error === 'string' ? errorResponse.error : "An error occurred";
+              }
+            });
           },
-          error: () => {
-            this.error = 'An error occurred while processing your request';
+          error: (errorResponse) => {
+            this.error = typeof errorResponse.error === 'string' ? errorResponse.error : "An error occurred";
           }
-      });
-      this.getLaTex(this.exp).subscribe({
-        next: (response) => {
-          this.latex_exp = response; 
-          this.renderMathJax();
-        },
-        error: () => {
-          this.error = 'An error occurred while processing your request';
-        }
       });
     }
   }
   
   getTree(exp: string): Observable<string> {
     const body = { exp };
-    return this.http.post('https://theoremcalc.onrender.com/api/parse', body, { responseType: 'text' });
+    return this.http.post(this.apiUrl + '/api/parse', body, { responseType: 'text' });
   }
 
   getLaTex(exp: string): Observable<string> {
     const body = { exp };
-    return this.http.post('https://theoremcalc.onrender.com/api/latex', body, { responseType: 'text' });
+    return this.http.post(this.apiUrl + '/api/latex', body, { responseType: 'text' });
   }
 
   ngAfterViewInit(): void {

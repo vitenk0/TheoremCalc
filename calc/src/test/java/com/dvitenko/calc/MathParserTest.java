@@ -8,38 +8,21 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 public class MathParserTest {
-
+    // Test getCompleteLatex() method
     @Test
-    public void testTokenizeSimpleExpression() {
-        MathParser parser = new MathParser("3+5*2");
-        List<String> tokens = parser.tokenize("3+5*2");
-        assertEquals(List.of("3", "+", "5", "*", "2"), tokens);
-    }
-
-    @Test
-    public void testTokenizeWithParentheses() {
-        MathParser parser = new MathParser("(3+5)*2");
-        List<String> tokens = parser.tokenize("(3+5)*2");
-        assertEquals(List.of("(", "3", "+", "5", ")", "*", "2"), tokens);
-    }
-
-    @Test
-    public void testTokenizeWithVariables() {
-        MathParser parser = new MathParser("2a+3b");
-        List<String> tokens = parser.tokenize("2a+3b");
-        assertEquals(List.of("2", "*", "a", "+", "3", "*", "b"), tokens);
-    }
-
-    @Test
-    public void testTokenizeWithExponents() {
-        MathParser parser = new MathParser("2^3+5");
+    public void testGetCompleteLatex() {
+        List<String> tokens = List.of("2", "+", "3", "*", "x");
+        MathParser parser = new MathParser(tokens);
         Node node = parser.evaluate();
-        assertEquals("+\r\n" + //
-                        "├── ^\r\n" + //
-                        "│   ├── 2\r\n" + //
-                        "│   └── 3\r\n" + //
-                        "└── 5\r\n", 
-                        node.toString());
+        assertEquals("\\(2 + 3x\\)", node.getCompleteLatex());
+    }
+
+    @Test
+    public void testGetCompleteLatex2() {
+        List<String> tokens = List.of("(", "2", "x", "+", "3.7", ")", "^", "4", "/", "5", "-", "g");
+        MathParser parser = new MathParser(tokens);
+        Node node = parser.evaluate();
+        assertEquals("", node.getCompleteLatex());
     }
 }
 

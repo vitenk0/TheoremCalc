@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Prime {
-    private int start;
-    private int end;
+    public int start;
+    public int end;
 
     public Prime(int start, int end) {
         this.start = start;
