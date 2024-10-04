@@ -15,13 +15,13 @@ public class Tokenizer {
 
     @JsonCreator
     public Tokenizer(@JsonProperty("exp") String expression) {
-        this.expression = expression;
+        this.expression = expression.replaceAll("\\s+", "");
     }
 
     // Tokenize the expression into numbers, variables, operators, and parentheses
     public List<String> tokenize() {
         List<String> tokens = new ArrayList<>();
-        Matcher matcher = Pattern.compile("\\d+\\.\\d+|\\d+|[a-zA-Z]+|[-+*/()^]").matcher(this.expression);
+        Matcher matcher = Pattern.compile("\\d+\\.\\d+|\\d+|sin|cos|tan|sqrt|[a-zA-Z]+|[-+*/()^]").matcher(this.expression);
         
         int openCount = 0;
         int closeCount = 0;
@@ -60,6 +60,7 @@ public class Tokenizer {
             return tokens;
         }
 
+        // Check for empty parentheses
         for (int i = 0; i < tokens.size(); i++) {
             if (tokens.get(i).equals("(") && (i + 1 < tokens.size() && tokens.get(i + 1).equals(")"))) {
                 this.isValid = false;
@@ -68,14 +69,26 @@ public class Tokenizer {
             }
         }
 
+        // Check for unwrapped functions
+        for (int i = 0; i < tokens.size(); i++) {
+            if (tokens.get(i).matches("sin|cos|tan|sqrt") && (i + 1 >= tokens.size() || !tokens.get(i + 1).equals("("))) {
+                this.isValid = false;
+                this.message = "Function \"" + tokens.get(i) + "\" must be followed by parentheses";
+                return tokens;
+            }
+        }
+
         List<String> processedTokens = new ArrayList<>();
         for (int i = 0; i < tokens.size(); i++) {
             processedTokens.add(tokens.get(i));
 
-            // If a number is followed by a variable or '(', insert '*'
+            // If a number or variable is followed by an argument or '(', insert '*', except for functions
             if (i < tokens.size() - 1 && (tokens.get(i).matches("\\d+\\.?\\d*") || tokens.get(i).matches("[a-zA-Z]+") || tokens.get(i).equals(")")) 
-            && (tokens.get(i + 1).matches("[a-zA-Z]+") || tokens.get(i + 1).equals("("))) {
-                processedTokens.add("*");
+                && (tokens.get(i + 1).matches("[a-zA-Z]+") || tokens.get(i + 1).equals("("))) {
+                // Check if the current token is a function
+                if (!(tokens.get(i).matches("sin|cos|tan|sqrt") && (i + 1 < tokens.size() && tokens.get(i + 1).equals("(")))) {
+                    processedTokens.add("*");
+                }
             }
         }
 

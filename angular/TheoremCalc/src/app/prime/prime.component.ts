@@ -21,9 +21,6 @@ export class PrimeComponent {
   result: string | null = null;
   error: string | null = null;
 
-  //Testing
-  //private apiUrl = 'http://localhost:8080';
-  //Prod
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}

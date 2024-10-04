@@ -4,7 +4,8 @@ public class AST {
     enum Type {
         NUMBER, 
         VARIABLE, 
-        OPERATOR
+        OPERATOR,
+        FUNCTION
     }
 
     public static class Node {
@@ -41,6 +42,9 @@ public class AST {
                 this.left.print(buffer, childrenPrefix + "├── ", childrenPrefix + "│   ");
                 this.right.print(buffer, childrenPrefix + "└── ", childrenPrefix + "    ");
             }
+            if(this.type == Type.FUNCTION) {
+                this.left.print(buffer, childrenPrefix + "└── ", childrenPrefix + "    ");
+            }
         }
 
         private int getPrecedence(String op) {
@@ -62,8 +66,7 @@ public class AST {
             if (this.type == Type.NUMBER || this.type == Type.VARIABLE) {
                 return value;
             }
-
-            if (this.type == Type.OPERATOR) {
+            else if (this.type == Type.OPERATOR) {
                 String leftLatex = left != null ? left.toLatex() : "";
                 String rightLatex = right != null ? right.toLatex() : "";
 
@@ -91,6 +94,13 @@ public class AST {
                         return leftLatex + "^{" + rightLatex + "}"; // Exponentiation in LaTeX
                     default:
                         return value; // Return operator as-is if not handled
+                }
+            }
+            else if (this.type == Type.FUNCTION) {
+                if(value.equals("sqrt")) {
+                    return "\\sqrt{" + left.toLatex() + "}";
+                } else {
+                return "\\" + value + "\\left(" + left.toLatex() + "\\right)";
                 }
             }
             return "";

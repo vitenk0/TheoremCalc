@@ -37,30 +37,30 @@ public class MathParser {
 
     // Parse multiplication and division
     private Node parseTerm() {
-        Node node = parseExponentiation();
+        Node node = parseFactor();
         while (getCurrentToken() != null && (getCurrentToken().equals("*") || getCurrentToken().equals("/"))) {
             String op = getCurrentToken();
             consumeToken();
-            Node rightNode = parseExponentiation();
+            Node rightNode = parseFactor(); // Parse next factor (not exponentiation)
             node = new Node(op, Type.OPERATOR, node, rightNode);
         }
         return node;
     }
 
-    // Parse exponents
-    private Node parseExponentiation() {
-        Node node = parseFactor();
+    // Parse exponentiation
+    private Node parseFactor() {
+        Node node = parseBase();
         while (getCurrentToken() != null && getCurrentToken().equals("^")) {
             String op = getCurrentToken();
             consumeToken();
-            Node rightNode = parseExponentiation();
+            Node rightNode = parseBase(); // Parse the right side of exponentiation
             node = new Node(op, Type.OPERATOR, node, rightNode);
         }
         return node;
     }
 
-    // Parse factors (numbers, variables, and expressions inside parentheses)
-    private Node parseFactor() {
+    // Parse bases (numbers, variables, and expressions inside parentheses or functions)
+    private Node parseBase() {
         String token = getCurrentToken();
         if (token == null) 
             return null;
@@ -75,14 +75,20 @@ public class MathParser {
         } else if (token.matches("\\d+\\.\\d+")) {  // Floating point numbers
             consumeToken();
             return new Node(token, Type.NUMBER);
-        } else if (token.matches("[a-zA-Z]+")) {  // Variables
-            consumeToken();
-            return new Node(token, Type.VARIABLE);
+        } else if (token.matches("[a-zA-Z]+")) {  // Variables or functions
+            if (token.equals("sin") || token.equals("cos") || token.equals("tan") || token.equals("sqrt")) {
+                consumeToken(); // consume function name
+                consumeToken(); // consume '(' after function name
+                Node argNode = parseExpression();
+                consumeToken(); // consume ')'
+                return new Node(token, Type.FUNCTION, argNode, null);
+            } else {
+                consumeToken(); // consume variable
+                return new Node(token, Type.VARIABLE);
+            }
         }
         return null;
     }
-
-
 
     public Node evaluate() {
         return parseExpression();

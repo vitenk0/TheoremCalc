@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dvitenko.calc.excep.InvalidInputException;
 import com.dvitenko.calc.func.*;
 
 @RestController
@@ -51,20 +50,21 @@ public class Controller {
 	}
 
 	@PostMapping("/parse")
-	public String Parser(@RequestBody Tokenizer tokenizer) {
+	public ResponseEntity<apiResponse<String>> Parser(@RequestBody Tokenizer tokenizer) {
 		List<String> tokens = tokenizer.tokenize();
 		if (!tokenizer.isValid) {
-			throw new InvalidInputException("Invalid Input: " + tokenizer.message);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+									.body(new apiResponse<>(null, "Invalid Input: " + tokenizer.message));
 		}
         MathParser parser = new MathParser(tokens);
-		return parser.evaluate().toString();
+		return ResponseEntity.ok(new apiResponse<>(parser.evaluate().toString(), null));
 	}
 
 	@PostMapping("/latex")
-	public String toLaTex(@RequestBody Tokenizer tokenizer) {
+	public ResponseEntity<apiResponse<String>> toLaTex(@RequestBody Tokenizer tokenizer) {
 		List<String> tokens = tokenizer.tokenize();
 		MathParser parser = new MathParser(tokens);
-		return parser.evaluate().getCompleteLatex();
+		return ResponseEntity.ok(new apiResponse<>(parser.evaluate().getCompleteLatex(), null));
 	}
 
 }

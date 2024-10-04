@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http'; 
-import { Observable } from 'rxjs';
+import { HttpClient, HttpClientModule } from '@angular/common/http'; 
+import { catchError, Observable, throwError } from 'rxjs';
 import { AfterViewInit } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, PLATFORM_ID } from '@angular/core';
+import { apiResponse } from '../api-response.model';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -23,9 +24,6 @@ export class ParserComponent implements AfterViewInit {
   error: string | null = null;
   latex_exp: string | null = null;
 
-  //Testing
-  //private apiUrl = 'http://localhost:8080';
-  //Prod
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: any) {}
@@ -39,37 +37,55 @@ export class ParserComponent implements AfterViewInit {
     this.tree = null;
     this.latex_exp = null;
 
-    if(this.exp === null) {
+    if(this.exp === null || this.exp === '') {
       this.error = 'Enter an expression';
     } else {
       this.getTree(this.exp).subscribe({
           next: (response) => {
-            this.tree = response;
+            if(response.data){
+              this.tree = response.data;
+            }
             this.getLaTex(this.exp!).subscribe({
               next: (latexResponse) => {
-                this.latex_exp = latexResponse; 
-                this.renderMathJax();
+                if(latexResponse.data){
+                  this.latex_exp = latexResponse.data; 
+                  this.renderMathJax();
+                }
               },
               error: (errorResponse) => {
-                this.error = typeof errorResponse.error === 'string' ? errorResponse.error : "An error occurred";
+                this.error = errorResponse.message;
               }
             });
           },
           error: (errorResponse) => {
-            this.error = typeof errorResponse.error === 'string' ? errorResponse.error : "An error occurred";
+            this.error = errorResponse.message;
           }
       });
     }
   }
   
-  getTree(exp: string): Observable<string> {
+  getTree(exp: string): Observable<apiResponse<string>> {
     const body = { exp };
-    return this.http.post(this.apiUrl + '/api/parse', body, { responseType: 'text' });
+    return this.http.post<apiResponse<string>>(this.apiUrl + "/api/parse", body)
+    .pipe(
+      catchError((error) => {
+        console.error('HTTP Error:', error);
+        const errorMessage = error.error?.error || "An unexpected error occurred";
+        return throwError(() => new Error(errorMessage));
+      })
+    );
   }
 
-  getLaTex(exp: string): Observable<string> {
+  getLaTex(exp: string): Observable<apiResponse<string>> {
     const body = { exp };
-    return this.http.post(this.apiUrl + '/api/latex', body, { responseType: 'text' });
+    return this.http.post<apiResponse<string>>(this.apiUrl + "/api/latex", body)
+    .pipe(
+      catchError((error) => {
+        console.error('HTTP Error:', error);
+        const errorMessage = error.error?.error || "An unexpected error occurred";
+        return throwError(() => new Error(errorMessage));
+      })
+    );
   }
 
   ngAfterViewInit(): void {
@@ -104,7 +120,6 @@ export class ParserComponent implements AfterViewInit {
     }
   }
 }
-
 
 declare global {
   interface Window {
