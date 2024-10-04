@@ -5,6 +5,7 @@ import { NgIf } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http'; 
 import { catchError, Observable, throwError } from 'rxjs';
 import { apiResponse } from '../api-response.model';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-prime',
@@ -23,7 +24,7 @@ export class PrimeComponent {
   //Testing
   //private apiUrl = 'http://localhost:8080';
   //Prod
-  private apiUrl = 'https://theoremcalc.onrender.com';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

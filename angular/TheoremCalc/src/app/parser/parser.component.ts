@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { AfterViewInit } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, PLATFORM_ID } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-parser',
@@ -25,7 +26,7 @@ export class ParserComponent implements AfterViewInit {
   //Testing
   //private apiUrl = 'http://localhost:8080';
   //Prod
-  private apiUrl = 'https://theoremcalc.onrender.com';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: any) {}
 
