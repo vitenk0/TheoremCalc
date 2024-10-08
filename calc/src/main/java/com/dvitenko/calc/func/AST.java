@@ -85,15 +85,19 @@ public class AST {
                 switch (value) {
                     case "+":
                     case "-":
-                        return leftLatex + " " + value + " " + rightLatex;
+                        if (right.type == Type.NUMBER && right.value.charAt(0) == '-') {
+                            // If the right is a negative number, convert to a positive sign
+                            return leftLatex + " + " + rightLatex.substring(1); // Combine as +
+                        }
+                        return leftLatex + " - " + rightLatex; // Normal subtraction
                     case "*":
-                        return leftLatex + rightLatex; // LaTeX dot for multiplication
+                        return leftLatex + "\\cdot" + rightLatex; 
                     case "/":
-                        return "\\frac{" + leftLatex + "}{" + rightLatex + "}"; // LaTeX fraction
+                        return "\\frac{" + leftLatex + "}{" + rightLatex + "}";
                     case "^":
-                        return leftLatex + "^{" + rightLatex + "}"; // Exponentiation in LaTeX
+                        return leftLatex + "^{" + rightLatex + "}";
                     default:
-                        return value; // Return operator as-is if not handled
+                        return value;
                 }
             }
             else if (this.type == Type.FUNCTION) {

@@ -23,6 +23,7 @@ export class ParserComponent implements AfterViewInit {
   tree: string | null = null;
   error: string | null = null;
   latex_exp: string | null = null;
+  simplify: boolean = true;
 
   private apiUrl = environment.apiUrl;
 
@@ -45,7 +46,7 @@ export class ParserComponent implements AfterViewInit {
             if(response.data){
               this.tree = response.data;
             }
-            this.getLaTex(this.exp!).subscribe({
+            this.getLaTex(this.exp!, this.simplify).subscribe({
               next: (latexResponse) => {
                 if(latexResponse.data){
                   this.latex_exp = latexResponse.data; 
@@ -76,8 +77,8 @@ export class ParserComponent implements AfterViewInit {
     );
   }
 
-  getLaTex(exp: string): Observable<apiResponse<string>> {
-    const body = { exp };
+  getLaTex(exp: string, simplify:boolean): Observable<apiResponse<string>> {
+    const body = { exp, simplify };
     return this.http.post<apiResponse<string>>(this.apiUrl + "/api/latex", body)
     .pipe(
       catchError((error) => {

@@ -1,6 +1,7 @@
 package com.dvitenko.calc;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dvitenko.calc.func.*;
+import com.dvitenko.calc.func.AST.Node;
+
+import ch.qos.logback.core.subst.Token;
 
 @RestController
 @RequestMapping("/api")
@@ -56,15 +60,19 @@ public class Controller {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 									.body(new apiResponse<>(null, "Invalid Input: " + tokenizer.message));
 		}
-        MathParser parser = new MathParser(tokens);
-		return ResponseEntity.ok(new apiResponse<>(parser.evaluate().toString(), null));
+		Node tree = new MathParser(tokens).evaluate();
+		return ResponseEntity.ok(new apiResponse<>(tree.toString(), null));
 	}
 
 	@PostMapping("/latex")
-	public ResponseEntity<apiResponse<String>> toLaTex(@RequestBody Tokenizer tokenizer) {
+	public ResponseEntity<apiResponse<String>> toLaTex(@RequestBody Map<String, Object> request) {
+		boolean simplify = (boolean) request.get("simplify");
+		Tokenizer tokenizer = new Tokenizer((String) request.get("exp"));
 		List<String> tokens = tokenizer.tokenize();
-		MathParser parser = new MathParser(tokens);
-		return ResponseEntity.ok(new apiResponse<>(parser.evaluate().getCompleteLatex(), null));
+		Node tree = new MathParser(tokens).evaluate();
+		if(simplify)
+			tree = TreeSimplifier.simplify(tree);
+		return ResponseEntity.ok(new apiResponse<>(tree.getCompleteLatex(), null));
 	}
 
 }

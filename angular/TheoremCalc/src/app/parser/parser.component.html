@@ -18,12 +18,23 @@
           <div>
             <input
               type="text"
+              class="exp"
               placeholder="Expression"
               id="exp"
               name="exp"
               [(ngModel)]="exp"
               required
             />
+          </div>
+          <div class="checkbox">
+            <input 
+              type="checkbox" 
+              class="checkbox"
+              id="checkbox"
+              name="checkbox"
+              [(ngModel)]="simplify" 
+            />
+            Simplify
           </div>
           <button type="submit">Submit</button>
         </form>

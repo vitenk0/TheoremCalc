@@ -64,6 +64,19 @@ public class MathParser {
         String token = getCurrentToken();
         if (token == null) 
             return null;
+
+        // Handle negative numbers by checking if '-' is followed by a number or variable
+        if (token.equals("-")) {
+            consumeToken(); // Consume the '-'
+            token = getCurrentToken(); // Check the next token
+            if (token != null && (token.matches("\\d+") || token.matches("\\d+\\.\\d+") || token.matches("[a-zA-Z]+"))) {
+                Node node = parseBase(); // Recursively parse the base after the '-'
+                return new Node("-" + node.value, node.type); // Treat it as a negative number or variable
+            } else {
+                return new Node("-1", Type.NUMBER); // Default to a negative one if no valid token follows
+            }
+        }
+
         if (token.equals("(")) {
             consumeToken(); // consume '('
             Node node = parseExpression();
