@@ -50,7 +50,7 @@ public class MathParserTest {
         List<String> tokens = tokenizer.tokenize();
         MathParser parser = new MathParser(tokens);
         Node node = parser.evaluate();
-        assertEquals("\\(x - 2\\cdot-4\\)", node.getCompleteLatex());
+        assertEquals("\\(x - 2\\left(-4\\right)\\)", node.getCompleteLatex());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class MathParserTest {
     }
 
     @Test
-    public void testNegative() {
+    public void testNeg() {
         String exp = "-2+x";
         Tokenizer tokenizer = new Tokenizer(exp);
         List<String> tokens = tokenizer.tokenize();
@@ -82,6 +82,50 @@ public class MathParserTest {
         Node node = parser.evaluate();
         TreeSimplifier.simplify(node);
         assertEquals("\\(x + 4\\)", node.getCompleteLatex());
+    }
+
+    @Test
+    public void testNegFunc() {
+        String exp = "-sin(5x)";
+        Tokenizer tokenizer = new Tokenizer(exp);
+        List<String> tokens = tokenizer.tokenize();
+        MathParser parser = new MathParser(tokens);
+        Node node = parser.evaluate();
+        TreeSimplifier.simplify(node);
+        assertEquals("\\(-\\sin\\left(5x\\right)\\)", node.getCompleteLatex());
+    }
+
+    @Test
+    public void testParen() {
+        String exp = "-(7+x)+x";
+        Tokenizer tokenizer = new Tokenizer(exp);
+        List<String> tokens = tokenizer.tokenize();
+        MathParser parser = new MathParser(tokens);
+        Node node = parser.evaluate();
+        TreeSimplifier.simplify(node);
+        assertEquals("\\(-(x + 7) + x\\)", node.getCompleteLatex());
+    }
+
+    @Test
+    public void testCommute() {
+        String exp = "(2+y)+(2+x)";
+        Tokenizer tokenizer = new Tokenizer(exp);
+        List<String> tokens = tokenizer.tokenize();
+        MathParser parser = new MathParser(tokens);
+        Node node = parser.evaluate();
+        TreeSimplifier.simplify(node);
+        assertEquals("\\(x + y + 4\\)", node.getCompleteLatex());
+    }
+
+    @Test
+    public void testNonCommute() {
+        String exp = "(2+y)+(2+x)/n";
+        Tokenizer tokenizer = new Tokenizer(exp);
+        List<String> tokens = tokenizer.tokenize();
+        MathParser parser = new MathParser(tokens);
+        Node node = parser.evaluate();
+        TreeSimplifier.simplify(node);
+        assertEquals("\\(\\frac{\\left(x + 2\\right)}{n} + y + 2\\)", node.getCompleteLatex());
     }
 }
 

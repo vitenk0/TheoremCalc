@@ -1,31 +1,30 @@
 package com.dvitenko.calc.func;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AST {
     enum Type {
         NUMBER, 
         VARIABLE, 
         OPERATOR,
-        FUNCTION
+        FUNCTION,
+        UNARY
     }
 
     public static class Node {
         String value;
-        Node left;
-        Node right;
         Type type;
+        List<Node> children;
 
         public Node(String value, Type type) {
             this.value = value;
             this.type = type;
-            this.left = null;
-            this.right = null;
+            this.children = new ArrayList<>();
         }
 
-        public Node(String value, Type type, Node left, Node right) {
-            this.value = value;
-            this.type = type;
-            this.left = left;
-            this.right = right;
+        public void addChild(Node child) {
+            this.children.add(child);
         }
 
         public String toString() {
@@ -38,12 +37,13 @@ public class AST {
             buffer.append(prefix);
             buffer.append(value);
             buffer.append('\n');
-            if(this.type == Type.OPERATOR) {
-                this.left.print(buffer, childrenPrefix + "├── ", childrenPrefix + "│   ");
-                this.right.print(buffer, childrenPrefix + "└── ", childrenPrefix + "    ");
-            }
-            if(this.type == Type.FUNCTION) {
-                this.left.print(buffer, childrenPrefix + "└── ", childrenPrefix + "    ");
+            for (int i = 0; i < children.size(); i++) {
+                Node child = children.get(i);
+                if (i < children.size() - 1) {
+                    child.print(buffer, childrenPrefix + "├── ", childrenPrefix + "│   ");
+                } else {
+                    child.print(buffer, childrenPrefix + "└── ", childrenPrefix + "    ");
+                }
             }
         }
 
@@ -65,33 +65,59 @@ public class AST {
         public String toLatex() {
             if (this.type == Type.NUMBER || this.type == Type.VARIABLE) {
                 return value;
-            }
-            else if (this.type == Type.OPERATOR) {
-                String leftLatex = left != null ? left.toLatex() : "";
-                String rightLatex = right != null ? right.toLatex() : "";
+            } else if (this.type == Type.OPERATOR) {
+                StringBuilder latex = new StringBuilder();
 
-                boolean needLeftParen = left != null && 
-                    (left.type == Type.OPERATOR && getPrecedence(left.value) < getPrecedence(value));
-                boolean needRightParen = right != null && 
-                    (right.type == Type.OPERATOR && getPrecedence(right.value) <= getPrecedence(value));
+                // Handle addition with multiple children
+                if (value.equals("+")) {
+                    for (int i = 0; i < children.size(); i++) {
+                        String childLatex = children.get(i).toLatex();
+                        
+                        // Apply parentheses if the child is an operator with lower precedence or a negative number
+                        boolean needParen = children.get(i).type == Type.OPERATOR && 
+                            getPrecedence(children.get(i).value) < getPrecedence(value) ||
+                            (children.get(i).type == Type.NUMBER && children.get(i).value.charAt(0) == '-');
+                        
+                        if (needParen) {
+                            childLatex = "\\left(" + childLatex + "\\right)";
+                        }
+                        
+                        // Append the child LaTeX to the result
+                        if (i > 0) {
+                            latex.append(" + ");
+                        }
+                        latex.append(childLatex);
+                    }
+                    return latex.toString();
+                }
+                
+                String leftLatex = children.size() > 0 ? children.get(0).toLatex() : "";
+                String rightLatex = children.size() > 1 ? children.get(1).toLatex() : "";
 
-                if (needLeftParen) {
-                    leftLatex = "\\left(" + leftLatex + "\\right)";
-                }
-                if (needRightParen) {
-                    rightLatex = "\\left(" + rightLatex + "\\right)";
-                }
+                boolean needLeftParen = children.size() > 0 && 
+                    (children.get(0).type == Type.OPERATOR && getPrecedence(children.get(0).value) < getPrecedence(value));
+                boolean needRightParen = children.size() > 1 && 
+                    (children.get(1).type == Type.OPERATOR && getPrecedence(children.get(1).value) <= getPrecedence(value));
+
+                    if (needLeftParen) {
+                        leftLatex = "\\left(" + leftLatex + "\\right)";
+                    }
+                    if (needRightParen || (children.size() > 1 && children.get(1).type == Type.NUMBER && children.get(1).value.charAt(0) == '-')) {
+                        rightLatex = "\\left(" + rightLatex + "\\right)";
+                    }
 
                 switch (value) {
                     case "+":
+                        return leftLatex + " + " + rightLatex;
                     case "-":
-                        if (right.type == Type.NUMBER && right.value.charAt(0) == '-') {
+                        // Check if the right child exists and is a negative number
+                        if (children.size() > 1 && children.get(1).type == Type.NUMBER && children.get(1).value.charAt(0) == '-') {
                             // If the right is a negative number, convert to a positive sign
-                            return leftLatex + " + " + rightLatex.substring(1); // Combine as +
+                            return leftLatex + " + " + children.get(1).value.substring(1); // Combine as +
                         }
                         return leftLatex + " - " + rightLatex; // Normal subtraction
                     case "*":
-                        return leftLatex + "\\cdot" + rightLatex; 
+                        return leftLatex + rightLatex; 
                     case "/":
                         return "\\frac{" + leftLatex + "}{" + rightLatex + "}";
                     case "^":
@@ -99,13 +125,28 @@ public class AST {
                     default:
                         return value;
                 }
-            }
-            else if (this.type == Type.FUNCTION) {
-                if(value.equals("sqrt")) {
-                    return "\\sqrt{" + left.toLatex() + "}";
-                } else {
-                return "\\" + value + "\\left(" + left.toLatex() + "\\right)";
+            } else if(this.type == Type.UNARY) {
+                String childLatex = children.size() > 0 ? children.get(0).toLatex() : "";
+                return value + "(" + childLatex + ")";
+            } else if (this.type == Type.FUNCTION) {
+                StringBuilder argsLatex = new StringBuilder();
+                for (int i = 0; i < children.size(); i++) {
+                    if (i > 0) {
+                        argsLatex.append(", ");
+                    }
+                    argsLatex.append(children.get(i).toLatex());
                 }
+                String out = "";
+                if(value.charAt(0) == '-') {
+                    value = value.substring(1);
+                    out = "-" + out;
+                }
+                if (value.equals("sqrt")) {
+                    out = out + "\\sqrt{" + argsLatex + "}";
+                } else {
+                    out = out + "\\" + value + "\\left(" + argsLatex + "\\right)";
+                }
+                return out;
             }
             return "";
         }
